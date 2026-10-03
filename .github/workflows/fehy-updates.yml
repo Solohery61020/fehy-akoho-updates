@@ -20,6 +20,58 @@ jobs:
         run: |
           import base64, glob, hashlib, json, os, re, subprocess, urllib.request
           from pathlib import Path
+          from urllib.error import HTTPError
           repo = os.environ['GITHUB_REPOSITORY']
-          token = os.environ.get('GH_TOKEN', '')
-         
+          token = os.environ['GH_TOKEN']
+          def api(path, data=None):
+              request = urllib.request.Request(
+                  'https://api.github.com/repos/' + repo + '/' + path,
+                  data=None if data is None else json.dumps(data).encode(),
+                  headers={'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json'},
+                  method='GET' if data is None else 'PUT')
+              with urllib.request.urlopen(request, timeout=60) as response:
+                  return json.load(response)
+          event = json.loads(Path(os.environ['GITHUB_EVENT_PATH']).read_text())
+          release = event.get('release') or api('releases/latest')
+          assert not release['draft'] and not release['prerelease']
+          assets = [a for a in release['assets'] if a['name'].endswith('.apk')]
+          assert len(assets) == 1, 'APK iray ihany no tokony hampidirina.'
+          asset = assets[0]
+          assert 0 < asset['size'] <= 80 * 1024 * 1024
+          with urllib.request.urlopen(asset['browser_download_url'], timeout=60) as response:
+              apk = response.read(80 * 1024 * 1024 + 1)
+          assert len(apk) == asset['size'], 'APK tsy feno.'
+          Path('release.apk').write_bytes(apk)
+          sdk = os.environ.get('ANDROID_HOME') or os.environ.get('ANDROID_SDK_ROOT', '')
+          aapts = sorted(glob.glob(sdk + '/build-tools/*/aapt'))
+          assert aapts, 'Tsy hita ny aapt.'
+          badging = subprocess.check_output([aapts[-1], 'dump', 'badging', 'release.apk'], text=True)
+          match = re.search(r"package: name='([^']+)' versionCode='(\d+)' versionName='([^']+)'", badging)
+          assert match and match[1] == 'mg.rahajandraibe.fehyakoho'
+          manifest = {
+              'packageName': match[1],
+              'versionCode': int(match[2]),
+              'versionName': match[3],
+              'apkUrl': asset['browser_download_url'],
+              'sha256': hashlib.sha256(apk).hexdigest(),
+              'notes': 'Mise a jour Fehy Akoho ' + match[3]
+          }
+          previous = None
+          try:
+              previous = api('contents/latest.json?ref=main')
+          except HTTPError as error:
+              if error.code != 404:
+                  raise
+          if previous:
+              old = json.loads(base64.b64decode(previous['content']))
+              assert manifest['versionCode'] >= old['versionCode']
+          content = json.dumps(manifest, indent=2) + '\n'
+          payload = {
+              'message': 'Mise a jour ' + match[3],
+              'branch': 'main',
+              'content': base64.b64encode(content.encode()).decode()
+          }
+          if previous:
+              payload['sha'] = previous['sha']
+          api('contents/latest.json', payload)
+          print('Vita: ' + match[3])
