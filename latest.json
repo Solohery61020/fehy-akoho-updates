@@ -1,8 +1,8 @@
 {
   "packageName": "mg.rahajandraibe.fehyakoho",
-  "versionCode": 85,
-  "versionName": "2.10.02",
-  "apkUrl": "https://github.com/Solohery61020/fehy-akoho-updates/releases/download/v2.10.02/Fehy_Akoho_V2_10_02.apk",
-  "sha256": "c76b8542d9bbdeceeb138b83da21165d4c6e18b74fb51c1d5cf3726019a8bb2f",
-  "notes": "Mise a jour Fehy Akoho 2.10.02"
+  "versionCode": 87,
+  "versionName": "2.10.04",
+  "apkUrl": "https://github.com/Solohery61020/fehy-akoho-updates/releases/download/v2.10.04/Fehy_Akoho_V2_10_04.apk",
+  "sha256": "cd93ca45f0ef71d2021441a910ca3b402fc49bb95dc2a128f39e7bace57d5ab7",
+  "notes": "Mise a jour Fehy Akoho 2.10.04"
 }
