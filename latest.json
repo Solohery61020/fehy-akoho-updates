@@ -1,8 +1,8 @@
 {
   "packageName": "mg.rahajandraibe.fehyakoho",
-  "versionCode": 110,
-  "versionName": "3.01.05",
-  "apkUrl": "https://github.com/Solohery61020/fehy-akoho-updates/releases/download/v3.01.05/Fehy_Akoho_V3_01_05.apk",
-  "sha256": "8a0f599591579a9cd9079252c7287346be4bfb3653c5290d5bbb7502f5c15f9f",
-  "notes": "Mise a jour Fehy Akoho 3.01.05"
+  "versionCode": 114,
+  "versionName": "3.01.09",
+  "apkUrl": "https://github.com/Solohery61020/fehy-akoho-updates/releases/download/v3.01.09/Fehy_Akoho_V3_01_09.1.apk",
+  "sha256": "a9a26c2e4f78471a234689f5838e8ea34261329ddb23b587ca9d99c0182eddb9",
+  "notes": "Mise a jour Fehy Akoho 3.01.09"
 }
